@@ -1,0 +1,20 @@
+{
+  "name": "Factiva Faster Reader",
+  "version": "0.0.1",
+  "description": "Allows for faster reading of Factiva news search results.",
+  "icons": { "128": "icon.png" },
+  "background": { "scripts": ["background.js"] },
+  "content_scripts": [
+    { "matches": ["http://*/*"], "js": ["factivacrx_content_script.js"] }
+  ],
+  "permissions": [
+    "tabs",
+    "https://global.factiva.com/*"
+  ],
+  "page_action": {
+      "default_name": "Factiva Faster Reader",
+      "default_icon": "thumb.png",
+      "default_popup": "popup.html"
+  },
+  "manifest_version": 2
+}
