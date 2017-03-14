@@ -62,10 +62,48 @@ function renderStatus(statusText) {
   document.getElementById('status').textContent = statusText;
 }
 
+// FROM OTHER: This extension demonstrates using chrome.downloads.download() to
+// download URLs.
+
+var allLinks = [];
+var visibleLinks = [];
+
+
+// Display all visible links.
+function showLinks() {
+  var linksString = ''
+  for (var index in allLinks) {
+    linksString += allLinks[index] + "<br />\n";
+  }
+  //...
+  renderStatus(linksString); // READ FROM allLinks list
+}
+
+// Add links to allLinks and visibleLinks, sort and show them.  send_links.js is
+// injected into all frames of the active tab, so this listener may be called
+// multiple times.
+chrome.extension.onRequest.addListener(function(links) {
+  for (var index in links) {
+    allLinks.push(links[index]);
+  }
+  allLinks.sort();
+  visibleLinks = allLinks;
+  showLinks();
+});
+
+
 document.addEventListener('DOMContentLoaded', function() {
   getCurrentTabUrl(function(url) {
     // Start
     renderStatus('Hello world, from ' + url);
 
+    // inject factivacrx_content_script.js into all frames in the active tab
+    chrome.windows.getCurrent(function (currentWindow) {
+    chrome.tabs.query({active: true, windowId: currentWindow.id},
+                      function(activeTabs) {
+      chrome.tabs.executeScript(
+        activeTabs[0].id, {file: 'factivacrx_content_script.js', allFrames: true});
+      });
+    });
   });
 });
