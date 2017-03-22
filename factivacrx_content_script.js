@@ -1,33 +1,14 @@
 //factivacrx_content_script.js
 // Do something on the Factiva webpage
 
-//// BASED ON mappy
-
-
-// // The background page is asking us to find an address on the page.
-// if (window == top) {
-  // chrome.extension.onRequest.addListener(function(req, sender, sendResponse) {
-    // sendResponse(findAddress());
-  // });
-// }
-
-
-// // Do something on this page, return the something found.
-// // Return null if none is found.
-// var findAddress = function() {
-
-  // return null;
-// }
-
-
-
 //// BASED ON download_links
 
 // Send back to the popup a sorted deduped list of valid link URLs on this page.
 // The popup injects this script into all frames in the active tab.
 
-var links = [].slice.apply(document.getElementsByTagName('a'));
-links = links.map(function(element) {
+//var links = [].slice.apply(document.getElementsByTagName('a'));
+var tags = [].slice.apply(document.querySelectorAll('a.enHeadline'));
+var links = tags.map(function(element) {
   // Return an anchor's href attribute, stripping any URL fragment (hash '#').
   // If the html specifies a relative path, chrome converts it to an absolute
   // URL.
@@ -53,4 +34,25 @@ for (var i = 0; i < links.length;) {
   }
 }
 
-chrome.extension.sendRequest(links);
+// Get the headings text
+var headings = tags.map(function(element) {
+  // Return the heading text
+  return element.innerHTML;
+});
+
+//chrome.extension.sendRequest(links);
+chrome.extension.sendRequest(headings);
+
+// Styling the injections
+var css = document.createElement("style");
+css.type = "text/css";
+css.innerHTML = ".headlineInject { color: violet }";
+document.body.appendChild(css);
+
+// Click each headling link, calling the article to load in the sidebar.
+for (var i = 0; i< tags.length; i++) {
+  tags[i].click();
+  // Do something with the article?
+  // ...
+  tags[i].outerHTML += "<div class='headlineInject' id='headlineInject"+i+"'><p>This article has been loaded by a Chrome Extension.</p></div>";
+}

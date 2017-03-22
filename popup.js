@@ -71,7 +71,7 @@ var visibleLinks = [];
 
 // Display all visible links.
 function showLinks() {
-  var linksString = ''
+  var linksString = 'Headlines\n\n'
   for (var index in allLinks) {
     linksString += allLinks[index] + "<br />\n";
   }
@@ -86,7 +86,7 @@ chrome.extension.onRequest.addListener(function(links) {
   for (var index in links) {
     allLinks.push(links[index]);
   }
-  allLinks.sort();
+  //allLinks.sort();
   visibleLinks = allLinks;
   showLinks();
 });
@@ -95,7 +95,7 @@ chrome.extension.onRequest.addListener(function(links) {
 document.addEventListener('DOMContentLoaded', function() {
   getCurrentTabUrl(function(url) {
     // Start
-    renderStatus('Hello world, from ' + url);
+    renderStatus('Factiva Faster Reader, loading ' + url);
 
     // inject factivacrx_content_script.js into all frames in the active tab
     chrome.windows.getCurrent(function (currentWindow) {
