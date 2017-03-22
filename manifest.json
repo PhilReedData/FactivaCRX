@@ -16,5 +16,6 @@
       "default_icon": "thumb.png",
       "default_popup": "popup.html"
   },
+  "web_accessible_resources": ["factivacrx_page_script.js"],
   "manifest_version": 2
 }

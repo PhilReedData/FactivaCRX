@@ -46,7 +46,7 @@ chrome.extension.sendRequest(headings);
 // Styling the injections
 var css = document.createElement("style");
 css.type = "text/css";
-css.innerHTML = ".headlineInject { color: violet }";
+css.innerHTML = ".headlineInject { color: violet } .headlineInject strong {font-weight: bold} .headlineInject p { padding-bottom: 8px; border-bottom: 1px dotted gray} ";
 document.body.appendChild(css);
 
 function hasArticleLoaded() {
@@ -78,72 +78,46 @@ function loadArticles(tag, i) {
   }
   
   // // Find anything else? TEST
-  // var aboveArticleTop = [].slice.apply(document.querySelectorAll('#articleFrame'));
-  // if (aboveArticleTop.length > 0) {
-    // injectionText += "<p>TEST: FOUND #articleFrame</p>";
-    // aboveArticle2Divs = aboveArticleTop[0].childNodes;
-    // //injectionText += "<p>TEST: IT HAS " + aboveArticle2Divs.length + " childNodes</p>";
-    // if (aboveArticle2Divs.length > 1) {  
-      // l3 = aboveArticle2Divs[1].childNodes;
-      // //injectionText += "<p>TEST: THAT HAS " + l3.length + " childNodes</p>";
-      // console.log (l3[0]);
-    // } else { console.log('no L3 child nodes'); }
-  // }
-  // var aboveArticleSpans = [].slice.apply(document.querySelectorAll('#artHdr1 span'));
-  // if (aboveArticleSpans.length > 0) {
-    // injectionText += "<p>TEST: " + aboveArticleSpans[0].innerHTML + "</p>";
-  // } //OR
   if (document.querySelector('#artHdr1 span')) {
     injectionText += "<p>TEST: ARTICLE LOADED</p>";
   } else {
     injectionText += "<p>TEST: ARTICLE NOT LOADED</p>";
   }
   
-  // Alternative Test if the content has loaded
-  //if (document.querySelector('#articleFrame div:nth-child(2) .article')) {}
-  
   injectionText += "</div>";
   // Finish
   tag.outerHTML += injectionText;
 }
 
+// function copyHightlights(i) is in factiva_page_script.js
+
+
+function addButtons(tag, i) {
+  // After the heading, add an instruction, and a button to pull out bolds
+  var injectionText = "<div class='headlineInject' id='headlineInject"+i+"'><p>These buttons have been added by a Chrome Extension. Load article, wait, get highlights.</p>";
+  
+  injectionText += "<input type='button' value='Load article' onclick='alert(\"For now, please click on the article title instead, thanks.\")' />";
+  injectionText += "<input type='button' value='Get highlights' onclick='copyHighlights("+i+")' />";
+  
+  injectionText += "</div>";
+  // Finish
+  tag.outerHTML += injectionText;
+    
+}
+
+// http://stackoverflow.com/questions/9515704/insert-code-into-the-page-context-using-a-content-script
+var s = document.createElement('script');
+s.src = chrome.extension.getURL('factivacrx_page_script.js');
+(document.head||document.documentElement).appendChild(s);
+// s.onload = function() {
+    // s.parentNode.removeChild(s);
+// };
 
 // Click each headling link, calling the article to load in the sidebar.
 for (var i = 0; i< tags.length; i++) {
-  //var delaySecs = 10;
-  //var delay = delaySecs * 1000;
   console.log('Start ' + (i+1));
-  //var a = performance.now();
-//  tags[i].click();
-  //var b = performance.now();
-  //console.log('Mid ' + (i+1) + ', after ' + (b-a));
-  // Can't do below, async! This loop moves on before the function finishes.
-  //window.setTimeout(function() { loadArticles(tags[i], i); }, delay);
-//  loadArticles(tags[i], i);
-  //var c = performance.now();
-  //console.log('End ' + (i+1) + ', after ' + (c-b));
-  
-  // Wish I could use JQuery to force loadArticles to happen after tags click
-  // (It's in the session, just can't access it from here)
-  //$.when(tags[i].click()).then(loadArticles(tags[i], i));
-  
-  // Make function2 happen after function1
-  function1(tags[i], function() {
-    function2(tags[i], i);
-  });
-}
-function function1(tag, callback) {
-  tag.click();
-  callback();
-} 
-function function2(tag, i) {
-  //DOES NOT WORK!
-  // var attemptsRemaining = 5;
-  // console.log('Has article loaded for '+ (i+1) + '? ' + hasArticleLoaded())
-  // while (hasArticleLoaded() == false && attemptsRemaining >0){
-    // setTimeout( function() { console.log('Pause for ' + (i+1) + ', remaining ' + attemptsRemaining) }, 2000);
-    // attemptsRemaining--;
-  // }
-  // console.log('Load articles regardless for ' + (i+1));
-  loadArticles(tag, i);
+  //tags[i].click();
+  // The delay from the line above means the line below fails.
+  //loadArticles(tags[i], i);
+  addButtons(tags[i], i);
 }

@@ -71,7 +71,7 @@ var visibleLinks = [];
 
 // Display all visible links.
 function showLinks() {
-  var linksString = 'Headlines\n\n'
+  var linksString = 'Use the buttons added to the page.\n\nHeadlines\n\n'
   for (var index in allLinks) {
     linksString += allLinks[index] + "<br />\n";
   }
